@@ -1,36 +1,25 @@
-
-
-
 import environ
+from pathlib import Path
 
 env = environ.Env()
 
 environ.Env.read_env()
 
-
-
-from pathlib import Path
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-
-SECRET_KEY = env('SECRET_KEY')   ## replaced this value from .env file to keep the SECRET_KEY more secure
+SECRET_KEY = env('SECRET_KEY')  # Using the secret key from the .env file
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['django-app-vig4.onrender.com', '*']
-
-CSRF_TRUSTED_ORIGINS = ['https://django-app-vig4.onrender.com']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,16 +32,10 @@ INSTALLED_APPS = [
 
     "crispy_forms",
     "crispy_bootstrap5",
-
-    'storages',
-
-
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-
 CRISPY_TEMPLATE_PACK = "bootstrap5"
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -84,44 +67,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'edenthought.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# Commenting out RDS/PostgreSQL database configuration
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': env('DB_NAME'),
+#         'USER': env('DB_USER'),
+#         'PASSWORD': env('DB_PASSWORD'),
+#         'HOST': env('DB_HOST'),
+#         'PORT': '5432',
 #     }
 # }
 
-
-
+# Replacing with default SQLite configuration
 DATABASES = {
-
-    'default': {   
-
-
-        'ENGINE': 'django.db.backends.postgresql',  
-
-        'NAME': env('DB_NAME'),  
-
-        'USER': env('DB_USER'),  
-
-        'PASSWORD': env('DB_PASSWORD'),  
-
-        'HOST': env('DB_HOST'),    
-
-        'PORT': '5432', 
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
-
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -137,90 +107,50 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
+# Static and Media files
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
-MEDIA_URL = 'media/'
-
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
-STATIC_URL = 'static/'
-
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# SMTP CONFIGURATION
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = 'True'
 
-
-## SMTP CONFIGURATION
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  
-
-EMAIL_HOST = 'smtp.gmail.com' 
-
-EMAIL_PORT = '587'  
-
-EMAIL_USE_TLS = 'True'  
-
-
-## secured key values from .env file
-
+# Secured key values from .env file
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 
+# Commenting out AWS S3 storage configuration
+# AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+# AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+# AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
 
+# STORAGES = {
+#     "default": {
+#         "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
+#     },
+#     "staticfiles": {
+#         "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
+#     },
+# }
 
+# AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+# AWS_S3_FILE_OVERWRITE = False
 
-###    AMAZON S3 CONFIGURATION
-
-
-
-
-AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID') # - Enter your AWS Access Key ID HERE
-AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY') # - Enter your AWS Secret Access Key ID HERE
-
-
-# Django 4.2 > Storage configuration for Amazon S3
-
-
-
-AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')   
-
-
-STORAGES = {
-
-    # Media file (image) management
-    "default": {
-        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
-    },
-    
-    # CSS and JS file management
-    "staticfiles": {
-        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
-        
-    },
-}
-
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-
-AWS_S3_FILE_OVERWRITE = False
 
